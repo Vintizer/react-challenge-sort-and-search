@@ -3,42 +3,50 @@ import Data from './DataLoader'
 
 
 export default class UserList extends Component {
-	constructor() {
-		super();
-		this.setState({
-			data: [{"name": "Mary Peterson"},{"name": "Agnes Foster"}]
-		});
+	constructor(props) {
+		super(props);
+		this.state = {
+			data: [{name: "Mary Peterson"}, {name: "Agnes Foster"}]
+		}
 	}
-	// getInitialState() {
-	// 	return {
-	// 		data: [{"name": "Mary Peterson"},{"name": "Agnes Foster"}]
-	// 	}
-	// }
+
+	componentWillMount() {
+		Data.then((response) => {
+				return response.json();
+			})
+			.then((res) => {
+					this.setState({
+						data: res
+					})
+				}
+			)
+	}
 
 	render() {
-		// Data.then((response) => {
-		// 		return response.json();
-		// 		// this.setState({
-		// 		// 	res:response.json()
-		// 		// })
-		// 	})
-		// 	.then((res) => {
-		// 			console.log("res", res);
-		// 			// this.setState({
-		// 			// 		res
-		// 			// 	})
-		// 		}
-		// 	)
+		console.log("props filter", this.props.filter);
 		return (
 			<div>
-				<p>Error while receive photo - {this.state.data}</p>
-				<ul>
+				<table className="table table-striped table-bordered table-hover">
+					<thead>
+					<td><b>Image</b></td>
+					<td><b>Name</b></td>
+					<td><b>Age</b></td>
+					<td><b>Phone</b></td>
+					</thead>
+					<tbody>
 					{this.state.data.map((l) => {
-							return <li>{l.name}</li>;
+							if (l.name.toLowerCase().indexOf((this.props.filter || "").toLowerCase()) !== -1) {
+								return <tr>
+									<td><img width="60px" src={"images/" + l.image+ ".svg"}/></td>
+									<td>{l.name}</td>
+									<td>{l.age}</td>
+									<td>{l.phone}</td>
+								</tr>;
+							}
 						}
-					)
-					}
-				</ul>
+					)}
+					</tbody>
+				</table>
 			</div>
 		)
 	}
