@@ -9,56 +9,130 @@ export default class App extends Component {
 		super(props);
 		this.state = {
 			active: {
+				id: "",
 				name: "",
 				age: "",
 				animal: "",
 				phone: "",
 				phrase: ""
 			},
-			data: []
+			orderAge: true,
+			orderAlphabet: true,
+			data: [],
+			filterData: []
 		}
 	}
 
 	setFilter(e) {
+		let fData = this.state.data.filter((l)=> {
+			if (l.name.toLowerCase().indexOf((e.target.value || "").toLowerCase()) !== -1) {
+				return true;
+			}
+		});
+		console.log("fData", fData);
 		this.setState({
-			filter: e.target.value
+			filter: e.target.value,
+			active: {},
+			filterData: fData
+		}, this.setActiveByChangeView)
+	}
+
+	setActiveByChangeView() {
+		let fData = this.state.data.filter((l)=> {
+			if (l.name.toLowerCase().indexOf((this.state.filter || "").toLowerCase()) !== -1) {
+				return true;
+			}
+		});
+		this.setState({
+			active: this.state.filterData[0]
 		})
 	}
 
-	
 	setData(data) {
 		this.setState({
-			data
-		})
+			data,
+			active: {},
+			filterData: data
+		}, this.setActiveByChangeView)
 	}
 
 	setActiveById(id) {
-		if (id) {
+		console.log("setActiveById", id);
+		if (id || id === 0) {
+			console.log("id here");
 			this.setState({
 				active: this.state.data[id]
 			})
 		}
-
 	}
 
 	setActive(data) {
-		console.log("data", data);
-		if (data.length) {
-			this.setState({
-				active: this.state.data[data.target.parentNode.getAttribute('data-react')]
-			})
-		}
-
+		this.setState({
+			active: this.state.data[data.target.parentNode.getAttribute('data-react')]
+		})
 	}
 
+	findFirstLane() {
+		let firstUserId;
+		let firstUser = this.state.data.map((l) => {
+			if (l.name.toLowerCase().indexOf((this.state.filter || "").toLowerCase()) !== -1) {
+				return l;
+			}
+		});
+		for (let i = 0; i < firstUser.length; i++) {
+			if (firstUser[i]) {
+				firstUserId = firstUser[i].id;
+				break;
+			}
+		}
+		return firstUserId
+	}
+
+	orderByAge() {
+		let arr = this.state.filterData.slice();
+		let arr2 = arr.slice();
+		arr2.sort((a, b)=> {
+			if(this.state.orderAge) {
+				return a.age - b.age;
+			} else {
+				return b.age - a.age;
+			}
+		})
+		this.setState({
+			orderAge: !this.state.orderAge,
+			filterData: arr2
+		}, this.setActiveByChangeView)
+	}
+
+	orderByAlphabet() {
+		let arr = this.state.filterData.slice();
+		let arr2 = arr.slice();
+		arr2.sort((a, b)=> {
+			if(this.state.orderAlphabet) {
+				if (a.name > b.name)
+					return 1;
+				else return -1;
+			} else {
+				if (a.name > b.name)
+					return -1;
+				else return 1;
+			}
+
+		})
+		this.setState({
+			orderAlphabet: !this.state.orderAlphabet,
+			filterData: arr2
+		}, this.setActiveByChangeView)
+	}
 
 	render() {
 		return (
 			<div className="container app">
 				<ActiveUser active={this.state.active}/>
-				<Toolbar setFilter={this.setFilter.bind(this)}/>
+				<Toolbar setFilter={this.setFilter.bind(this)} orderByAlphabet={this.orderByAlphabet.bind(this)}
+						 orderByAge={this.orderByAge.bind(this)}/>
 				<UserList setData={this.setData.bind(this)} setActiveById={this.setActiveById.bind(this)}
-						  data={this.state.data}
+						  data={this.state.filterData} active={this.state.active}
 						  filter={this.state.filter} setActive={this.setActive.bind(this)}/>
 			</div>
 		);

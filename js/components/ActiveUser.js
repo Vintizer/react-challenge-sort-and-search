@@ -10,9 +10,7 @@ export default class ActiveUser extends Component {
 	render() {
 		let {name, age, image, phone, phrase} = this.props.active
 		return (
-			<p>ActiveUser {name + " " + age + " " + image + " " + phone + " " + phrase}</p>
+			<p>{name + " " + age + " " + image + " " + phone + " " + phrase}</p>
 		)
 	}
-
-
 }
