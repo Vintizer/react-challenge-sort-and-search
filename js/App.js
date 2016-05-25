@@ -92,7 +92,7 @@ export default class App extends Component {
 		let arr = this.state.filterData.slice();
 		let arr2 = arr.slice();
 		arr2.sort((a, b)=> {
-			if(this.state.orderAge) {
+			if (this.state.orderAge) {
 				return a.age - b.age;
 			} else {
 				return b.age - a.age;
@@ -108,7 +108,7 @@ export default class App extends Component {
 		let arr = this.state.filterData.slice();
 		let arr2 = arr.slice();
 		arr2.sort((a, b)=> {
-			if(this.state.orderAlphabet) {
+			if (this.state.orderAlphabet) {
 				if (a.name > b.name)
 					return 1;
 				else return -1;
@@ -127,14 +127,19 @@ export default class App extends Component {
 
 	render() {
 		return (
-			<div className="container app">
-				<ActiveUser active={this.state.active}/>
-				<Toolbar setFilter={this.setFilter.bind(this)} orderByAlphabet={this.orderByAlphabet.bind(this)}
-						 orderByAge={this.orderByAge.bind(this)}/>
-				<UserList setData={this.setData.bind(this)} setActiveById={this.setActiveById.bind(this)}
-						  data={this.state.filterData} active={this.state.active}
-						  filter={this.state.filter} setActive={this.setActive.bind(this)}/>
+		<div className="app container-fluid">
+			<Toolbar setFilter={this.setFilter.bind(this)} orderByAlphabet={this.orderByAlphabet.bind(this)}
+					 orderByAge={this.orderByAge.bind(this)}/>
+			<div className="row">
+				<div className="col-sm-4 col-md-3 col-lg-2">
+					<ActiveUser active={this.state.active} />
+				</div>
+				<div className="col-sm-8 col-md-9 col-lg-10">
+					<UserList setData={this.setData.bind(this)}
+							  data={this.state.filterData} setActive={this.setActive.bind(this)} />
+				</div>
 			</div>
+		</div>
 		);
 	}
 }
